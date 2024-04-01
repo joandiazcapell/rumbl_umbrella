@@ -1,0 +1,16 @@
+<.header>
+  Listing Users
+  <:actions>
+    <.link href={~p"/users/new"}>
+      <.button>New User</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="users" rows={@users}>
+  <:col :let={user} label="Name"><.user user={user} /></:col>
+  <:col :let={user} label="Username"><%= user.username %></:col>
+  <:action :let={user}>
+    <.link navigate={~p"/users/#{user}"}>Show</.link>
+  </:action>
+</.table>

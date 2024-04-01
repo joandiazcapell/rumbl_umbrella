@@ -1,0 +1,11 @@
+<.header>
+  User <%= @user.id %>
+</.header>
+<h1>Showing Users</h1>
+
+<.list>
+  <:item title="Name"><.user user={@user} /></:item>
+  <:item title="Username"><%= @user.username %></:item>
+</.list>
+
+<.back navigate={~p"/users"}>Back to users</.back>

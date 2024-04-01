@@ -1,0 +1,12 @@
+<.header>
+  Login
+  <:subtitle>Log into the Rumble.io webpage</:subtitle>
+</.header>
+<.simple_form :let={f} for={@conn.params["session"]} as={:session} action={~p"/sessions"}>
+
+    <.input field={f[:username]} type="text" label="Username" />
+    <.input field={f[:password]} type="password" label="Password" />
+    <:actions>
+        <.button>Log in</.button>
+    </:actions>
+</.simple_form>

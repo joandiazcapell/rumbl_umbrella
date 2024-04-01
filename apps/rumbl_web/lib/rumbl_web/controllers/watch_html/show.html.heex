@@ -1,0 +1,25 @@
+<.header>
+  Video <%= @video.title %>
+</.header>
+<div class="grid grid-rows-3 grid-flow-col gap-4">
+  <div class="row-span-3">
+    <div id="video" data-id={"#{@video.id}"} data-player-id={"#{player_id(@video)}"}>
+    </div>
+  </div>
+  <div class="row-span-2 col-span-2 annotations">
+    <h3>Users</h3>
+    <ul id="user-list"></ul>
+    <h3>Annotations</h3>
+
+    <div id="msg-container">
+    </div>
+
+    <div class="col-span-2">
+      <textarea id="msg-input" rows="3" placeholder="Comment..."></textarea>
+
+      <button id="msg-submit" class="button rounded-full text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700" type="submit">Post</button>
+    </div>
+  </div>
+</div>
+
+<.back navigate={~p"/manage/videos"}>Back to videos</.back>
