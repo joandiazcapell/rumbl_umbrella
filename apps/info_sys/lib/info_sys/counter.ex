@@ -1,33 +1,32 @@
 defmodule InfoSys.Counter do
+  use GenServer
   #Client side
-  def inc(pid), do: send(pid, :inc)
+  def inc(pid), do: GenServer.cast(pid, :inc)
 
-  def dec(pid), do: send(pid, :dec)
+  def dec(pid), do: GenServer.cast(pid, :dec)
 
-  def val(pid, timeout \\ 5000) do
-    ref = make_ref()
-    send(pid, {:value, self(), ref})
-
-    receive do
-      {^ref, value} -> value
-    after
-      timeout -> exit(:timeout)
-    end
+  def val(pid) do
+    GenServer.call(pid, :val)
   end
 
   #Server side
   def start_link(initial_value) do
-    {:ok, spawn_link(fn -> listen(initial_value) end)}
+    GenServer.start_link(__MODULE__, initial_value)
   end
 
-  defp listen(value) do
-    receive do
-      :inc -> listen(value + 1)
-      :dec -> listen(value - 1)
-      {:value, sender, ref} ->
-        send(sender, {ref, value})
-        listen(value)
-    end
+  def init(initial_value) do
+    {:ok, initial_value}
+  end
 
+  def handle_cast(:inc, value) do
+    {:noreply, value + 1}
+  end
+
+  def handle_cast(:dec, value) do
+    {:noreply, value - 1}
+  end
+
+  def handle_call(:val, _from, value) do
+    {:reply, value, value}
   end
 end
