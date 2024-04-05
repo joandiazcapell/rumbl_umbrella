@@ -10,7 +10,7 @@ defmodule InfoSys.Application do
     children = [
       # Starts a worker by calling: InfoSys.Worker.start_link(arg)
       # {InfoSys.Worker, arg}
-      {InfoSys.Counter, 5}, #new Counter worker
+      Supervisor.child_spec({InfoSys.Counter, 5}, restart: :temporary)
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
