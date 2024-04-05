@@ -1,5 +1,5 @@
 defmodule RumblWeb.VideoChannel do
-  use RumblWeb, :verified_routes
+  #use RumblWeb, :verified_routes
   use RumblWeb, :channel
 
   alias Rumbl.Multimedia
