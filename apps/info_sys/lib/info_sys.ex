@@ -21,4 +21,3 @@ defmodule InfoSys do
     Task.Supervisor.async_nolink(InfoSys.TaskSupervisor, backend, :compute, [query, opts], shutdown: :brutal_kill)
   end
 end
-vi
