@@ -47,7 +47,6 @@ defmodule RumblWeb.VideoChannel do
   end
 
   defp compute_additional_info(annotation, socket) do
-    InfoSys.compute(annotation.body, limit: 1, timeout: 10_000) #TODO I have to create to calls here don't know why otherwise it doesn't work
     for result <- InfoSys.compute(annotation.body, limit: 1, timeout: 10_000) do
       backend_user = Accounts.get_user_by(username: result.backend.name())
       attrs = %{body: result.text, at: annotation.at}
