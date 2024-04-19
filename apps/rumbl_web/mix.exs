@@ -57,7 +57,8 @@ defmodule RumblWeb.MixProject do
       {:gettext, "~> 0.20"},
       {:rumbl, in_umbrella: true},
       {:jason, "~> 1.2"},
-      {:bandit, "~> 1.2"}
+      {:bandit, "~> 1.2"},
+      {:info_sys, in_umbrella: true}
     ]
   end
 

@@ -33,6 +33,12 @@ defmodule Rumbl.Accounts do
     |> Repo.insert()
   end
 
+  def create_user!(attrs \\ %{}) do
+    %User{}
+    |> User.changeset(attrs)
+    |> Repo.insert!(on_conflict: :nothing)
+  end
+
   def change_registration(%User{} = user, params) do
     User.registration_changeset(user, params)
   end
