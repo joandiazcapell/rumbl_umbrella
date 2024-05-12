@@ -1,27 +1,43 @@
-defmodule RumblWeb.VideoChannelTest do
+defmodule RumblWeb.Channels.VideoChannelTest do
   use RumblWeb.ChannelCase
+  import RumblWeb.TestHelpers
 
   setup do
-    {:ok, _, socket} =
-      RumblWeb.UserSocket
-      |> socket("user_id", %{some: :assign})
-      |> subscribe_and_join(RumblWeb.VideoChannel, "videos:lobby")
+    user = insert_user(name: "Gary")
+    video = insert_video(user, title: "Testing")
+    token = Phoenix.Token.sign(@endpoint, "user socket", user.id)
+    {:ok, socket} = connect(RumblWeb.UserSocket, %{"token" => token})
 
-    %{socket: socket}
+    {:ok, socket: socket, user: user, video: video}
   end
 
-  test "ping replies with status ok", %{socket: socket} do
-    ref = push(socket, "ping", %{"hello" => "there"})
-    assert_reply ref, :ok, %{"hello" => "there"}
+  test "join replies with video annotations" , %{socket: socket, video: video, user: user} do
+    for body <- ~w(one two) do
+      Rumbl.Multimedia.annotate_video(user, video.id, %{body: body, at: 0})
+    end
+    {:ok, reply, socket} = subscribe_and_join(socket, "videos:#{video.id}", %{})
+
+    assert socket.assigns.video_id == video.id
+    assert %{annotations: %{data: [%{body: "one"}, %{body: "two"}]}} = reply
   end
 
-  test "shout broadcasts to video:lobby", %{socket: socket} do
-    push(socket, "shout", %{"hello" => "all"})
-    assert_broadcast "shout", %{"hello" => "all"}
+  test "inserting new annotations", %{socket: socket, video: video} do
+    {:ok, _, socket} = subscribe_and_join(socket, "videos:#{video.id}", %{})
+    ref = push socket, "new_annotation", %{body: "the body", at: 0}
+    assert_reply ref, :ok, %{}
+    assert_broadcast "new_annotation", %{}
   end
 
-  test "broadcasts are pushed to the client", %{socket: socket} do
-    broadcast_from!(socket, "broadcast", %{"some" => "data"})
-    assert_push "broadcast", %{"some" => "data"}
+  test "new annotations triggers InfoSys", %{socket: socket, video: video} do
+    insert_user(
+      username: "wolfram",
+      passwrod: "supersecret"
+    )
+
+    {:ok, _, socket} = subscribe_and_join(socket, "videos:#{video.id}", %{})
+    ref = push socket, "new_annotation", %{body: "1 + 1", at: 123}
+    assert_reply ref, :ok, %{}
+    assert_broadcast "new_annotation", %{body: "1 + 1", at: 123}
+    assert_broadcast "new_annotation", %{body: "2", at: 123}
   end
 end
